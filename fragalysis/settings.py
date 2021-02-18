@@ -305,11 +305,14 @@ GRAPH_MODELS = {"all_applications": True, "group_models": True}
 
 # email settings for upload key stuff
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', True)
-EMAIL_PORT = os.environ.get('EMAIL_PORT', 587)
 EMAIL_HOST_USER = os.environ.get("EMAIL_USER")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_PASSWORD")
+# If there is an email user is defined then check the rest of the configuration is present.
+# The defaults are set for the current (gamil) production configuration.
+if EMAIL_HOST_USER:
+    EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+    EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', True)
+    EMAIL_PORT = os.environ.get('EMAIL_PORT', 587)
+    EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_PASSWORD")
 
 # DOCS_ROOT = "/code/docs/_build/html "
 

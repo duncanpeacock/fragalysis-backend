@@ -575,7 +575,15 @@ def react(request):
     :param request:
     :return:
     """
-    return render(request, "viewer/react_temp.html")
+    discourse_api_key = settings.DISCOURSE_API_KEY
+
+    context = {}
+    if discourse_api_key:
+        context['discourse_available'] = 'true'
+    else:
+        context['discourse_available'] = 'false'
+
+    return render(request, "viewer/react_temp.html", context)
 
 # Upload Compound set functions
 
@@ -963,9 +971,12 @@ def email_task_completion(contact_email, message_type, target_name, target_path=
     """
 
     logger.info('+ email_notify_task_completion: ' + message_type + ' ' + target_name)
-    error = False
-    if contact_email == '':
-        return error
+    email_from = settings.EMAIL_HOST_USER
+
+    if contact_email == '' or not email_from:
+        # Only send email if configured.
+        return
+
     if message_type == 'upload-success':
         subject = 'Fragalysis: Target: '+target_name+' Uploaded'
         message = 'The upload of your target data is complete. Your target is available at: ' \
@@ -979,22 +990,16 @@ def email_task_completion(contact_email, message_type, target_name, target_path=
         message = 'The validation/upload of your target data did not complete successfully. ' \
                   'Please navigate the following link to check the errors: validate_task/' + str(task_id)
 
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [contact_email, ]
-    if email_from:
-        logger.info('+ email_notify_task_completion email_from: ' + email_from )
+    logger.info('+ email_notify_task_completion email_from: ' + email_from )
     logger.info('+ email_notify_task_completion subject: ' + subject )
     logger.info('+ email_notify_task_completion message: ' + message )
     logger.info('+ email_notify_task_completion contact_email: ' + contact_email )
 
     # Send email - this should not prevent returning to the screen in the case of error.
-    try:
-        send_mail(subject, message, email_from, recipient_list)
-    except:
-        error = True
-
+    send_mail(subject, message, email_from, recipient_list, fail_silently=True)
     logger.info('- email_notify_task_completion')
-    return error
+    return
 
 
 # Task functions common between Compound Sets and Target Set pages.
