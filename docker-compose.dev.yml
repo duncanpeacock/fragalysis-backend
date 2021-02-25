@@ -55,6 +55,8 @@ services:
       POSTGRESQL_PASSWORD: fragalysis
       POSTGRESQL_HOST: database
       POSTGRESQL_PORT: 5432
+      #TODO
+      OIDC_RP_CLIENT_SECRET: c6245428-04c7-466f-9c4f-58c340e981c2
     ports:
       - "8080:80"
     depends_on:

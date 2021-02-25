@@ -467,6 +467,7 @@ class ComputedMolAndScoreSerializer(serializers.ModelSerializer):
     #         desc_dict[desc.name] = desc.description
     #     return desc_dict
 
+
 # Start of Discourse Serializers
 # Class for customer Discourse API
 class DiscoursePostWriteSerializer(serializers.Serializer):
@@ -479,3 +480,9 @@ class DiscoursePostWriteSerializer(serializers.Serializer):
     post_tags = serializers.JSONField()
 
 # End of Discourse Serializers
+
+
+# Serializer Class for DictToCsv API
+class DictToCsvSerializer(serializers.Serializer):
+    title = serializers.CharField(max_length=200)
+    dict = serializers.DictField()
